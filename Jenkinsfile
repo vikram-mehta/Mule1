@@ -3,6 +3,8 @@ node {
     def server = Artifactory.newServer url: "${params.arti_url}", username: "${params.arti_user}", password: "${params.arti_password}"
     def rtMaven = Artifactory.newMavenBuild()
     def buildInfo = Artifactory.newBuildInfo()
+    def mgoals = "clean install mule:deploy -Dusername="+"${params.anyp_user}"+" -Dpassword="+"${params.anyp_password}"
+  
     stage ('Clone') {
         git url: 'https://github.com/vikram-mehta/Mule1.git'
     }
@@ -21,7 +23,7 @@ node {
     }
         
     stage ('Install') {
-        rtMaven.run pom: 'pom.xml', goals: 'clean install mule:deploy -Dusername=${params.anyp_user} -Dpassword=${params.anyp_password}', buildInfo: buildInfo
+        rtMaven.run pom: 'pom.xml', goals: mgoals, buildInfo: buildInfo
     }
  
     stage ('Deploy') {
