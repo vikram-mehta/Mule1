@@ -21,7 +21,7 @@ node {
     }
         
     stage ('Install') {
-        rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
+        rtMaven.run pom: 'pom.xml', goals: 'clean install mule:deploy -Dusername=${params.anyp_user} -Dpassword=${params.anyp_password}', buildInfo: buildInfo
     }
  
     stage ('Deploy') {
