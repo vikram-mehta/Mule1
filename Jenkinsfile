@@ -1,32 +1,27 @@
 node {
-    def server
-    def buildInfo
-    def rtMaven
-    
+  
+    def server = Artifactory.newServer url: "${params.arti_url}", username: "${params.arti_user}", password: "${params.arti_password}"
+    def rtMaven = Artifactory.newMavenBuild()
+    def buildInfo = Artifactory.newBuildInfo()
     stage ('Clone') {
         git url: 'https://github.com/vikram-mehta/Mule1.git'
     }
-    echo 'USER>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'
- echo ${params.arti_user}
+
     stage ('Artifactory configuration') {
         // Obtain an Artifactory server instance, defined in Jenkins --> Manage:
-        server = Artifactory.server Arti, username: ${params.arti_user}, password: ${params.arti_password}
-
-        rtMaven = Artifactory.newMavenBuild()
-        rtMaven.tool = M3 // Tool name from Jenkins configuration
-        rtMaven.deployer releaseRepo: 'libs-release-local', snapshotRepo: 'libs-snapshot-local', server: server
-      //  rtMaven.resolver releaseRepo: 'libs-release', snapshotRepo: 'libs-snapshot', server: server
+        rtMaven.tool = 'M3' // Tool name from Jenkins configuration
+        rtMaven.deployer releaseRepo: 'mule-repo-local', snapshotRepo: 'mule-repo-local', server: server
+        rtMaven.resolver releaseRepo: 'mule-repo', snapshotRepo: 'mule-repo', server: server
         rtMaven.deployer.deployArtifacts = false // Disable artifacts deployment during Maven run
 
-        buildInfo = Artifactory.newBuildInfo()
     }
  
     stage ('Test') {
-        //rtMaven.run pom: 'Mule1/pom.xml', goals: 'clean test'
+        //rtMaven.run pom: 'pom.xml', goals: 'clean test'
     }
         
     stage ('Install') {
-        rtMaven.run pom: 'Mule1/pom.xml', goals: 'clean install', buildInfo: buildInfo
+        rtMaven.run pom: 'pom.xml', goals: 'clean install', buildInfo: buildInfo
     }
  
     stage ('Deploy') {
