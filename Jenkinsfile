@@ -9,7 +9,7 @@ node {
  
     stage ('Artifactory configuration') {
         // Obtain an Artifactory server instance, defined in Jenkins --> Manage:
-        server = Artifactory.server Arti, username: ${arti_user}, password: ${arti_password}
+        server = Artifactory.server Arti, username: ${params.arti_user}, password: ${params.arti_password}
 
         rtMaven = Artifactory.newMavenBuild()
         rtMaven.tool = M3 // Tool name from Jenkins configuration
