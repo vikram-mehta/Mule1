@@ -6,7 +6,8 @@ node {
     stage ('Clone') {
         git url: 'https://github.com/vikram-mehta/Mule1.git'
     }
- 
+    echo 'USER>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>'
+ echo ${params.arti_user}
     stage ('Artifactory configuration') {
         // Obtain an Artifactory server instance, defined in Jenkins --> Manage:
         server = Artifactory.server Arti, username: ${params.arti_user}, password: ${params.arti_password}
